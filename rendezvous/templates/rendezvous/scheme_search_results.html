@@ -1,0 +1,26 @@
+{% load skill_extras %}
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+$('.details').bind('mouseover', function () {
+$.get("/schemes/"+this.id+"/ajax/", function(data) {
+$('#details').html(data.html).hide().slideDown('fast');
+});
+});
+});
+</script>
+
+
+<h3>Search results:</h3>
+
+{% if results %}
+	{% for r in results  %}
+		{% if r.vacant %}
+			Scheme: <a id="{{ r.scheme.id }}" class="details">{{ r.scheme.name }}</a>. Open position: {{ r.name }}. Desired skills: {{ r.skills.all|list_skills }} <br>
+		{% endif %}
+	{% endfor %}
+
+{% else %}
+None found.
+{% endif %}

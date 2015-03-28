@@ -1,0 +1,38 @@
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="{{ STATIC_URL }}show_conversations.js"></script>
+
+<style>
+p.toggle {margin-left:2cm;}
+</style>
+
+{{ user.username }}'s messages.<br><br>
+
+{% if thread_list %}
+	{% for thread in thread_list %}
+			{% for m in thread %}
+				{% if forloop.first %}
+						<p>
+						On {{ m.sent_at }}, {{ m.sender }} to {{ m.recipient }}: <br>
+						<u>{{ m.headline }}</u><br>
+						{{ m.contents }}<br>
+						<a href="{{ m.id }}/delete/">Delete message</a>
+						<a href="{{ m.id }}/reply/">Reply</a>
+						</p>
+				{% else %}
+						<p class="toggle" style="display:none;">
+						On {{ m.sent_at }}, {{ m.sender }} to {{ m.recipient }}: <br>
+						<u>{{ m.headline }}</u><br>
+						{{ m.contents }}<br>
+						<a href="{{ m.id }}/delete/">Delete message</a>
+						<a href="{{ m.id }}/reply/">Reply</a>
+						</p>
+				{% endif %}
+			{% endfor %}
+		<br>
+		<br>
+	{% endfor %}
+{% else %}
+No messages. Foreveralone ;(
+{% endif %}
+
+<a href="/">Back to root</a>

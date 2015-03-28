@@ -1,0 +1,52 @@
+{% extends "rendezvous/base.html" %}
+
+{% block project_name %}
+<a class="brand" href="/schemes/{{ scheme.id }}/">Back to details</a>
+{% endblock %}
+
+{% block navigation_bar %}
+    <p class="navbar-text pull-left">
+    Apply for {{ scheme.name }}
+    </p>
+{% endblock %}
+
+{% block custom_files %}
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+{% endblock custom_files %}
+
+
+{% block custom_css %}
+    <style>
+        .content {
+            margin-left: 20px;
+        }
+    </style>
+{% endblock custom_css %}
+
+{% block content %}
+<div class="content">
+	<h2>Apply for <u>{{ scheme.name }}</u></h2>
+
+
+	<form id="send_application" action="" method="post">
+	{% csrf_token %}
+	
+	Headline: <br> {{ form.headline }} <br><br>
+	Position: <br> {{ form.positions }} <br><br>
+	Description: <br> {{ form.description }} <br><br>
+	
+	<input class="btn" type="submit" value="Submit">
+	</form>
+</div>
+
+	<script>
+		$("#send_application").submit(function() {
+			alert("Application sent!");
+		});
+	</script>
+{% endblock content %}
+
+
+
+
+

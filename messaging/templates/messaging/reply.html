@@ -1,0 +1,14 @@
+<h2>Reply</h2>
+
+<h3>Previous</h3>
+On {{ parent.sent_at }}, {{ parent.sender }}:<br>
+<u>{{ parent.headline }}</u><br>
+{{ parent.contents }}
+
+<br>
+
+<form action="" method="post">
+{% csrf_token %}
+{{ form.as_p }}
+<input id="message" type="submit" value="Send your message" />
+</form>

@@ -1,0 +1,33 @@
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+
+
+
+$('.user_trigger').bind('mouseenter', function () {
+
+var user_id = $('#details').find('.hidden_username').text();
+
+if (user_id != this.id) {
+	$.get("/users/"+this.id+"/ajax/", function(data) {
+	$('#details').html(data.html).hide().slideDown('slow');
+	});
+}
+
+});
+
+});
+</script>
+
+{% load skill_extras %}
+<h3>Search results:</h3>
+
+{% if results %}
+	{% for r in results  %}
+			<div class="user_item">Username: <a class="user_trigger" id="{{ r.id }}">{{ r.username }}</a>. Full name: {{ r.fullname }}. User's skills: {{ r.skills.all|list_skills }}  Location: {{ r.country }}
+			</div>
+	{% endfor %}
+{% else %}
+None found.
+{% endif %}

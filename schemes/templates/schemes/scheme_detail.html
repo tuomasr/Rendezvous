@@ -1,0 +1,20 @@
+Name: {{ scheme.name }}<br>
+Description: {{ scheme.description }}<br>
+Location: {% if scheme.location %} {{ scheme.location }} {% else %} anywhere {% endif %} <br>
+URL: {% if scheme.url %} <a href="{{ scheme.url }}">{{ scheme.url }}</a> {% else %} none {% endif %} <br>
+Admins:
+{% for admin in scheme.admins.all %}
+<a href="/users/{{ admin.username }}/">{% if forloop.last %}{{ admin.username }}{% else %}{{ admin.username }},{% endif %}</a>
+{% endfor %}
+
+{% if scheme.members.all %}
+	<br>
+	Members:
+	{% for member in scheme.members.all %}
+	<a href="/users/{{ member.username }}/">{% if forloop.last %}{{ member.username }}{% else %}{{ member.username }},{% endif %}</a>
+	{% endfor %}
+{% endif %}
+
+<br>
+<a href="{{ scheme.get_absolute_url }}join/">Participate in this Scheme</a>
+

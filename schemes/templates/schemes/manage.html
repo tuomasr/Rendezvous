@@ -1,0 +1,89 @@
+{% extends "rendezvous/base.html" %}
+
+{% block project_name %}
+	<a class="brand" href="/">Back to home</a>
+{% endblock %}
+
+{% block navigation_bar %}
+    <p class="navbar-text pull-left">
+    Manage your Schemes
+    </p>
+{% endblock %}
+
+{% block custom_files %}
+	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
+	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+	<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+	<script src="{{ STATIC_URL }}two_accordions.js"></script>
+{% endblock custom_files %}
+
+{% load skill_extras %}
+
+{% block custom_css %}
+	<style>
+		#accordion-resizer {
+		height: 220px;
+		}
+	</style>	
+{% endblock custom_css %}
+
+
+{% block content %}
+	
+	{% if scheme_list %}
+	    <ul>
+		{% for schemes in scheme_list %}
+		    	{% if forloop.first %}
+		    	<h2>Admin in schemes:</h2>
+		    	{% else %} <h2>Member in schemes:</h2>
+		    	{% endif %}
+		    	<br>
+
+		    	<div id="accordion{{ forloop.counter }}">
+			    	{% for scheme in schemes %}
+					    <h3><a href="/schemes/{{ scheme.id }}/">{{scheme.id}}: {{ scheme.name }} - Published on {{ scheme.pub_date|date:"d.m.Y" }}{% if scheme.updated %}, updated on {{ scheme.updated|date:"d.m.Y" }}{% else %}, no updates.
+						{% endif %}
+						</a><div class="progress progress-info progress-striped"><div class="bar" style="width: {{ scheme.progress }}%;"></div></div></h3>
+						<div>
+						<p>
+						Members:
+						{% for p in scheme.positions.filled_positions %}
+							{% if forloop.last %} {{ p.holder }} ({{ p.name }}). 
+							{% else %} {{ p.holder }} ({{ p.name }}), 
+							{% endif %}
+						{% endfor %}
+						<br>
+						{% for p in scheme.positions.all %}
+						{% if p.vacant %}
+							Open position: {{ p }}. Required skills: {{ p.skills.all|list_skills }} <br>
+						{% endif %}
+						{% endfor %}
+						Description of the scheme:
+						{% if scheme.description|length > 300 %}
+						{{ scheme.description|truncatechars:300 }}
+						{% else %}
+						{{ scheme.description }}
+						{% endif %}
+						<br>
+						Applications: {% if scheme.applications.count > 0 %}<a href="/inbox/schemes/">{{ scheme.applications.count }}</a> applications {% else %}no applications {% endif %}
+						<br>
+						{% if forloop.parentloop.counter0 == 0 %}
+							<form action="{{ scheme.get_absolute_url }}modify/" type="post">
+							<input type="submit" value="Modify">
+							</form>
+						{% endif %}
+						<form action="{{ scheme.get_absolute_url }}delete/" type="post">
+							<input type="submit" value="Abandon">
+						</form>
+						</p>
+						</div>
+		    		{% endfor %}
+				</div>
+		    <br>
+	    {% endfor %}
+	    </ul>
+	{% else %}
+	    <p>No schemes are available.</p>
+	{% endif %}
+
+{% endblock content %}

@@ -1,0 +1,138 @@
+{% extends "rendezvous/base.html" %}
+
+{% block custom_files %}
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+<script src="{{ STATIC_URL }}dynamic_formset.js"></script>
+<script src="{{ STATIC_URL }}autocomplete_geo.js"></script>
+{% endblock %}
+
+{% block custom_css %}
+<style type="text/css">
+#content {
+    padding-left: 10px;
+}
+
+.ui-widget-header{background-image:none;background-color:#729fcf;}
+.ui-slider { width: 220px;}
+
+</style>
+{% endblock %}
+
+{% block custom_js %}
+<script type="text/javascript">
+$(document).ready(function() {
+    $('.get_suggestions').bind('click', function () { // catch the form's submit event
+        var str_id = $(this).attr('id');
+        var last_idx = str_id.lastIndexOf('-');
+        var skills_id = '#' + str_id.substr(0, last_idx+1) + 'skills';
+        alert(skills_id);
+
+        $.ajax({ // create an AJAX call...
+            data: {content:$(skills_id).val()}, // get the form data
+            type: $(this).attr('method'), // GET or POST
+            url: '/users/data/get_by_skills/', // the file to call
+            success: function(data) { // on success..
+                $('.suggestions').html(data.html);
+            }
+        });
+        return false;
+    });
+});
+</script>
+
+<script>
+$(function() {
+    $( "#slider" ).slider({
+    value:0,
+    min: 0,
+    max: 100,
+    step: 25,
+    range: "min",
+    slide: function( event, ui ) {
+    $( "#id_progress" ).val(ui.value );
+    }
+    });
+    $( "#id_progress" ).val($( "#slider" ).slider( "value" ) );
+    });
+</script>
+{% endblock %}
+
+{% block project_name %}
+<a class="brand" href="/">Back to home</a>
+{% endblock %}
+
+{% block navigation_bar %}
+    <p class="navbar-text pull-left">
+    New Scheme
+    </p>
+{% endblock %}
+
+{% block content %}
+
+<div id="content">
+
+<form action="" enctype="multipart/form-data" method="POST">{% csrf_token %}
+    <h1>Create a new Scheme</h1>
+
+    <div class="row-fluid show-grid">
+        <div class="span4">
+            
+            <h2>1. Basic information on the Scheme</h2>
+
+            <div class="section">
+        		Name: <br>
+                {{ basic_form.name }} {% if basic_form.errors %} <p style="color:red"> Error: {{ basic_form.name.errors }}</p> {% endif %} <br>
+                Your position <br> 
+                {{ basic_form.admin_position }} <br> {% if basic_form.errors %} <p style="color:red"> Error: {{ basic_form.admin_position.errors }}</p> {% endif %} <br>
+        		Description of the Scheme <br>
+        		{{ basic_form.description }} <br> {% if basic_form.errors %} <p style="color:red"> Error: {{ basic_form.description.errors }}</p> {% endif %} <br>
+                Progress so far: <br><br>
+                <div id="slider"></div>
+                <input id="id_progress" name="progress" type="text" style="display:none;"/> <br>
+                
+                <p><label for="id_location" class="location">Scheme location (optional):</label> <input id="id_location" class="location" name="location" type="text" /></p>
+                URL (optional, e.g. GitHub repo) <br>
+                {{ basic_form.url }} <br>
+                File (optional, e.g. image) <br>
+                {{ basic_form.file }} <br><br>
+                <button type="submit" class="btn btn-primary btn-large" style="position:absolute;">
+                Save your scheme!
+                </button>
+            </div>
+
+        </div>
+
+        <div class="span4">
+            <h2>2. Open positions in the Scheme</h2>
+            {{ position_formset.management_form }}
+            {% for form in position_formset.forms %}
+            {% if form.errors %} <p style="color:red"> Error: {{ form.errors }} {{ form.non_field_errors }}</p> {% endif %}
+            <div class="item">
+        		<p><label for="id_form-0-position">Position:</label> <input id="id_form-0-position" maxlength="50" name="form-0-position" type="text" /></p>
+                <p><label for="id_form-0-invited">(Optional) Invite your friend:</label> <input class="invited" id="id_form-0-invited" maxlength="50" name="form-0-invited" type="text" /></p>
+        		<p><label for="id_form-0-skills">Desired skills:</label> <textarea cols="40" class="skills" id="id_form-0-skills" name="form-0-skills" rows="10"></textarea></p>
+                <p><a class="get_suggestions" id="id_form-0-suggestions">Get suggestions</a></p>
+                <p style=""><a class="delete" href="#">Delete</a></p>
+            </div>
+            {% endfor %}
+
+            <p><a id="add" href="#">Add another position</a></p>
+
+        </div>
+
+        <div class="span4">
+            <p class="suggestions"></p>
+        </div>
+
+
+    </div>
+    
+</form>
+
+</div>
+
+
+
+{% endblock %}

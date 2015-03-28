@@ -1,0 +1,78 @@
+{% extends "rendezvous/base.html" %}
+
+{% block project_name %}
+<a class="brand" href="/">Back to home</a>
+{% endblock %}
+
+{% block navigation_bar %}
+    <p class="navbar-text pull-left">
+    Current Schemes
+    </p>
+{% endblock %}
+
+{% block custom_files %}
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+<script src="{{ STATIC_URL }}accordion.js"></script>
+{% endblock custom_files %}
+
+{% load skill_extras %}
+
+{% block custom_css %}
+<style>
+	#accordion-resizer {
+	height: 220px;
+	 }
+
+	#high {
+		color:green;
+	}
+
+	#medium {
+		color:orange;
+	}
+
+	#low {
+		color:red;
+	}
+
+	#tell_more {
+		color:blue;
+	}
+</style>
+{% endblock custom_css %}
+
+{% block content %}
+
+	{% if latest_scheme_list %}
+	    <ul>
+		<div id="accordion">
+	    {% for scheme, scheme_data in latest_scheme_list %}
+		    <h3><a href="/schemes/{{ scheme.id }}/">{{scheme.id}}: {{ scheme.name }} - Published on {{ scheme.pub_date|date:"d.m.Y" }}{% if scheme.updated %}, updated on {{ scheme.updated|date:"d.m.Y" }}{% else %}, no updates
+			{% endif %}
+			</a><div class="progress progress-info progress-striped"><div class="bar" style="width: {{ scheme.progress }}%;"></div></div></h3>
+			<div>
+			<p>
+			Location: {% if scheme.location %} {{ scheme.location }} {% else %} Anywhere {% endif %} <br>
+			URL: {% if scheme.url %} <a href="{{ scheme.url }}">{{ scheme.url }}</a> {% else %} None {% endif %} <br>
+			{% for p, match, state in scheme_data %}
+				Open position: {{ p }}. Required skills: {{ p.skills.all|list_skills }} <span id="{{ state }}">({{ match|floatformat }}% match)</span> <br>
+			{% endfor %}
+			Description of the scheme:
+			{% if scheme.description|length > 300 %}
+			{{ scheme.description|truncatechars:300 }}
+			{% else %}
+			{{ scheme.description }}
+			{% endif %}
+			<br>
+			<a href="/schemes/{{ scheme.id }}/" id="tell_more">Tell me more</a>
+			</p>
+			</div>
+	    {% endfor %}
+		</div>
+	    </ul>
+	{% else %}
+	    <p>No schemes are available.</p>
+	{% endif %}
+{% endblock content %}

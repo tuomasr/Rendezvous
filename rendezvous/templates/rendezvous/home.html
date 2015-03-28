@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load url from future %}
+<html>
+	<head>
+		<title>Rendezvous</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link href="{{ STATIC_URL }}css/bootstrap.css" rel="stylesheet" media="screen">
+	</head>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<script src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
+
+    <style type="text/css">
+      body {
+        padding-top: 20px;
+        padding-bottom: 5px;
+      }
+
+      /* Custom container */
+      .container-narrow {
+        margin: 0 auto;
+        max-width: 800px;
+      }
+      .container-narrow > hr {
+        margin: 20px 0;
+      }
+
+      /* Main marketing message and sign up button */
+      .jumbotron {
+        margin: 20px 0;
+        text-align: center;
+      }
+      .jumbotron h1 {
+        font-size: 72px;
+        line-height: 1;
+      }
+      .jumbotron .btn {
+        font-size: 21px;
+        padding: 14px 24px;
+      }
+
+      /* Supporting marketing content */
+      .marketing {
+        margin: 60px 0;
+      }
+      .marketing p + h4 {
+        margin-top: 28px;
+      }
+
+      .lowerleft {
+      position:fixed;
+      bottom:5px;
+      left:5px;
+      }
+
+      #login_form {
+      position:absolute;
+      border-width: 1px;
+      border-style: none dashed dashed dashed;
+      padding: 10px;
+      }
+    </style>
+
+
+<link href="{{ STATIC_URL }}css/bootstrap-responsive.css" rel="stylesheet">
+<body>
+
+<script>
+   $(function() {
+       $('#login').click(function() {
+           $('#login_form').slideToggle(300);
+           return false;
+       });        
+   });
+</script>
+
+<body>
+
+<div class="container-narrow">
+
+<div class="masthead">
+  <ul class="nav nav-pills pull-right">
+    <li class="active"><a href="/">Home</a></li>
+    <li><a href="about/">About</a></li>
+    <li>
+    <a href="#" id="login">Login</a>
+    <div id="login_form" style="display:none;">
+      <form action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary btn-small">
+        <i class="icon-user icon-white"></i> Log in
+        </button>
+
+        {% if form.errors %}
+        <p style="color:red">Error:</p>
+        {{ form.non_field_errors }}
+        {% endif %}
+      </form>
+
+      <a rel="nofollow" href="{% url 'socialauth_begin' backend='linkedin' %}">
+          <img src="http://developer.linkedin.com/sites/default/files/js-signin.png" />
+      </a>
+    </div>
+    </li>
+  </ul>
+  <h3 class="muted">Rendezvous</h3>
+</div>
+
+<img border="0" src="{{ STATIC_URL }}rendezvous3.png">
+
+<hr>
+
+<div class="jumbotron">
+  <h1>Get shit done today!</h1>
+  <p class="lead">Rendezvous is the ultimate tool to find the right people to make a difference.</p>
+  <a class="btn btn-large btn-success" href="register/">Sign up for more</a>
+</div>
+
+<div class="lowerleft"><a href="mailto:tuomas.rintamaki@aalto.fi">&copy; Tuomas Rintamäki 2013</a></div>
+
+<hr>
+
+
+</body>
+</html>

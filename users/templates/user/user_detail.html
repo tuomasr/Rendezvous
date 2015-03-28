@@ -1,0 +1,94 @@
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+<script src="{{ STATIC_URL }}piechart.js"></script>
+<script>
+
+$(document).ready(function() {
+
+//
+// create a PieChart.
+//
+var pieChart = new PieChart( "piechart",
+{
+includeLabels: true,
+data: [{{ pref_rat.0 }}, {{ pref_rat.1 }}, {{ pref_rat.2 }}, {{ pref_rat.3 }}],
+labels: ['business', 'communication', 'design', 'engineering'],
+colors: [
+             ["#FFDAB9", "#FFDAB9"],
+             ["#E6E6FA", "#E6E6FA"],
+             ["#E0FFFF", "#E0FFFF"],
+             ["#FF0000", "#FF0000"]
+]
+}
+);
+
+//
+// nothing appears until you call draw().
+//
+pieChart.draw();
+
+/*
+* If you want to draw the labels separately, you can set
+* includeLabels to false, and call drawLabel() for each
+* pie chart segment.
+*
+for (var i = 0; i < pieChart.labels.length; i++) {
+pieChart.drawLabel(i);
+}
+*/
+
+/*
+* If you want to select a segment to highight it, you can
+* call select() for a given segment. Here's a little snippet
+* that animates selecting each segment.
+*
+var segment = 0;
+function nextSegment() {
+pieChart.select(segment);
+segment++;
+if (segment < pieChart.data.length) {
+setTimeout(nextSegment, 1000);
+}
+}
+setTimeout(nextSegment, 1000);
+*/
+
+});
+</script>
+
+<script type="text/javascript" src="http://platform.linkedin.com/in.js"></script>
+
+<script>
+function loadData() {
+IN.API.Profile("me")
+.result(function (result) {
+var txt = '<script type="IN/FullMemberProfile" data-id="' + result.values[0].id + '"&gt;&lt;/script>';
+$("#profile").html(txt);
+IN.parse(document.getElementById("profile"));
+})
+}
+</script>
+
+
+{% load skill_extras %}
+<canvas id="piechart" width="200" height="200" style="float:left;"></canvas>
+<div class="hidden_username" style="display:none;">{{ userprofile.id }}</div>
+Name: {{ userprofile.fullname }}<br>
+Description: {{ userprofile.description }}<br>
+Location: {% if userprofile.country %} {{ userprofile.country }}{% endif %}{% if userprofile.city %}, {{ userprofile.city }} {% endif %} <br>
+Skills: {{ userprofile.skills.all|list_skills }} 
+
+{% if userprofile.linkedin_public_profile_url %}
+<br>
+linkedini:
+<div id="profile"></div>
+		<script src="//platform.linkedin.com/in.js" type="text/javascript"></script>
+		<script type="IN/MemberProfile" data-id="{{ user.linkedin_public_profile_url }}" data-format="inline" data-related="true"></script>
+{% endif %}
+
+
+
+
+
+
+	

@@ -1,0 +1,14 @@
+<h2>Suggested users</h2>
+
+{% if user_list %}
+	{% for u in user_list  %}
+		{{ u.fullname }} <br>
+		{% if u.linkedin_public_profile_url %}
+			<script src="//platform.linkedin.com/in.js" type="text/javascript"></script>
+			<script type="IN/MemberProfile" data-id="{{ u.linkedin_public_profile_url }}" data-format="inline" data-related="true"></script>
+			<br>
+		{% endif %}
+	{% endfor %}
+{% else %}
+No suggestions.
+{% endif %}

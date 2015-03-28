@@ -1,0 +1,43 @@
+{% extends "rendezvous/base.html" %}
+
+{% block project_name %}
+	<a class="brand" href="/">Back to home</a>
+{% endblock %}
+
+{% block navigation_bar %}
+    <p class="navbar-text pull-left">
+    {{ public_profile.username }}'s profile
+    </p>
+{% endblock %}
+
+{% block custom_css %}
+	<style>
+		.content {
+			margin-left: 20px;
+		}
+	</style>
+{% endblock custom_css %}
+
+{% block content %}
+	<div class="content">
+		Username: {{ public_profile.username }} <br>
+		Full name: {{ public_profile.fullname }} <br>
+		Description: {{ public_profile.description }} <br>
+		Skills:
+		<ul>
+		{% for s in public_profile.skills.all %}
+			<li>{{ s }}<br>
+		{% endfor %}
+		</ul>
+		Country: {{ public_profile.country }} <br>
+		City: {{ public_profile.city }} <br>
+		{% if public_profile.linkedin_public_profile_url %}
+		{{ public_profile.fullname }}
+		<script src="//platform.linkedin.com/in.js" type="text/javascript"></script>
+		<script type="IN/MemberProfile" data-id="{{ public_profile.linkedin_public_profile_url }}" data-format="hover"></script>
+		{% endif %}
+		<br><br>
+		<a href="message/">Send a message to this user</a><br>
+	</div>
+
+{% endblock content %}

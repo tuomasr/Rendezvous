@@ -1,0 +1,33 @@
+{% if thread %}
+
+<script type="text/javascript">
+$(document).ready(function() {
+$('.reply').bind('click', function () {
+$.get("/inbox/applications/"+this.id+"/reply/", function(data) {
+$('#reply_form').hide().html(data.html).slideDown('fast');
+});
+});
+});
+</script>
+
+{% for m in thread  %}
+
+	<p>
+	On {{ m.sent_at }}, {{ m.sender }} to {{ m.recipient }}: <br>
+	<u>{{ m.headline }}</u><br>
+	{{ m.contents }}<br>
+	</p>
+
+	{% if forloop.last %}
+
+		<p id="replies"></p>
+		Make {{ thread.0.sender }}
+		<a href="/schemes/{{ thread.0.application.scheme.id }}/applications/user={{ thread.0.sender }}_position={{ thread.0.application.position }}_status=member">member</a><a href="/schemes/{{ thread.0.application.scheme.id }}/applications/user={{ thread.0.sender }}_position={{ thread.0.application.position }}_status=admin">/admin</a>
+		<a id="{{ thread.0.id }}" class="reply">Reply</a>
+	{% endif %}
+
+{% endfor %}
+
+<p id="reply_form"></p>
+
+{% endif %}

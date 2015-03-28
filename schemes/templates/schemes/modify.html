@@ -1,0 +1,85 @@
+{% extends "rendezvous/base.html" %}
+
+{% block project_name %}
+	<a class="brand" href="/schemes/manage/">Back to your Schemes</a>
+{% endblock %}
+
+{% block navigation_bar %}
+    <p class="navbar-text pull-left">
+    Modify {{ basic_form.name.value }}
+    </p>
+{% endblock %}
+
+{% block custom_js %}
+<script>
+	$(function() {
+    $( "#slider" ).slider({
+    value: {{ basic_form.progress.value }},
+    min: 0,
+    max: 100,
+    step: 25,
+    slide: function( event, ui ) {
+    $( "#id_progress" ).val(ui.value );
+    }
+    });
+    $( "#id_progress" ).val($( "#slider" ).slider( "value" ) );
+    });
+</script>
+{% endblock custom_js %}
+
+
+{% block custom_files %}
+	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
+	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+	<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+	<script src="{{ STATIC_URL }}dynamic_formset_modify.js"></script>
+	<script src="{{ STATIC_URL }}autocomplete_geo.js"></script>
+{% endblock custom_files %}
+
+{% block custom_css %}
+	<style>
+		.content {
+			margin-left: 20px;
+		}
+
+		.ui-slider { width: 220px;}
+	</style>
+{% endblock custom_css %}
+
+{% block content %}
+
+<div class="content">
+
+	<h2>Modify {{ basic_form.name.value }}</h2>
+
+	<form action="" method="POST">{% csrf_token %}
+	
+	<p><label for="id_name">Name:</label> <input id="id_name" maxlength="50" name="name" type="text" value="{{ basic_form.name.value }}" /></p>
+	<p><label for="id_description">Description:</label> <textarea cols="80" id="id_description" name="description" rows="10">{{ basic_form.description.value }}</textarea></p>
+	<p><label for="id_admin_position">Admin position:</label> <input id="id_admin_position" maxlength="50" name="admin_position" type="text" value="{{ basic_form.admin_position.value }}" /></p>
+	<p><label for="id_location" class="location">Location:</label> <input id="id_location" class="location" maxlength="50" name="location" type="text" value="{{ basic_form.location.value }}"/></p>
+	<p><label for="id_url">Url:</label> <input id="id_url" name="url" type="text" value="{{ basic_form.url.value }}"/></p>
+    <div id="slider"></div>
+    <p><input id="id_progress" name="progress" type="text"/></p>
+	<p><label for="id_file">File:</label> <input id="id_file" name="file" type="file" /></p>
+
+	{{ position_formset.management_form }}
+	{% for form in position_formset %}
+	    <div class="item">
+		<p><label for="id_form-{{ forloop.counter0 }}-position">Position:</label> <input id="id_form-{{ forloop.counter0 }}-position" maxlength="50" name="form-{{ forloop.counter0 }}-position" type="text" value="{{ form.position.value }}" /></p>
+		<p><label for="id_form-{{ forloop.counter0 }}-skills">Skills:</label> <textarea cols="40" class="skills" id="id_form-{{ forloop.counter0 }}-skills" name="form-{{ forloop.counter0 }}-skills" rows="10">{{ form.skills.value }}</textarea></p>
+	      <p style=""><a class="delete" href="#">Delete</a></p>
+	    </div>
+	{% endfor %}
+
+		<p><a id="add" href="#">Add another position</a></p>
+	    <input type="submit" value="Save changes" />
+	</form>
+	<form action="/schemes/manage/" type="post">
+		<input type="submit" value="Discard changes">
+	</form>
+
+</div>
+
+{% endblock %}
+

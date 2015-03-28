@@ -1,0 +1,8 @@
+List of users: <br>
+{% if user_list %}
+	{% for user in user_list %}
+		<a href="/users/{{ user.username}}">{{ user.username }}<br>
+	{% endfor %}
+{% else %}
+	No users.
+{% endif %}

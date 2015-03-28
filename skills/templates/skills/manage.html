@@ -1,0 +1,21 @@
+<html>
+<body>
+{% load url from future %}
+<h1>Manage your skills</h1>
+
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" media="all" />
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
+<script src="{{ STATIC_URL }}autocomplete.js" type="text/javascript"></script>
+
+<div class="ui-widget">
+<form action="" method="post">
+	{% csrf_token %}
+	<label for="skills">Type your skills, comma separated: </label><br>
+	<textarea cols="80" id="id_skills" name="skills" rows="3">{{ form.skills.value }}</textarea><br><br><br>
+	<input id="skills" type="submit" value="Save your skills" />
+</form>
+</div>
+
+</body>
+</html>

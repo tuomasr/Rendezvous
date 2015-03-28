@@ -1,0 +1,58 @@
+{% extends "rendezvous/base.html" %}
+
+{% load comments %}
+
+{% block project_name %}
+<a class="brand" href="/schemes/">Back to Schemes</a>
+{% endblock %}
+
+{% block navigation_bar %}
+    <p class="navbar-text pull-left">
+    {{ scheme.name }} - details
+    </p>
+{% endblock %}
+
+{% block custom_css %}
+    <style>
+        #id_honeypot {
+            display: none;
+        }
+
+        .content {
+            margin-left: 20px;
+        }
+    </style>
+{% endblock custom_css %}
+
+
+{% block content %}
+
+<div class="content">
+
+{% include "schemes/scheme_detail.html" %}
+
+{% render_comment_list for scheme %}
+
+{% if user.is_authenticated %}
+    {% get_comment_form for scheme as comment_form %}
+    <form action="{% comment_form_target %}" method="POST">
+    {% csrf_token %}
+    Comment:<br>
+    {{ comment_form.comment }}
+    {{ comment_form.honeypot }}
+    {{ comment_form.content_type }}
+    {{ comment_form.object_pk }}
+    {{ comment_form.timestamp }}
+    {{ comment_form.security_hash }}
+    <p class="submit">
+        <input type="submit" name="post" class="submit-post" value="Post" />
+        <input type="submit" name="preview" class="submit-preview" value="Preview" />
+    </p>
+    </form>
+{% else %}
+        <p>Please <a href="{% url 'login_view' request.get_full_path %}">log in</a> to leave a comment.</p>
+{% endif %}
+
+</div>
+
+{% endblock content %}

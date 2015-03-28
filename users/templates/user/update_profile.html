@@ -1,0 +1,145 @@
+{% extends "rendezvous/base.html" %}
+
+{% block project_name %}
+	<a class="brand" href="/">Back to home</a>
+{% endblock %}
+
+{% block navigation_bar %}
+    <p class="navbar-text pull-left">
+    Update your profile
+    </p>
+{% endblock %}
+
+{% block custom_files %}
+	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
+	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+	<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+	<script src="{{ STATIC_URL }}autocomplete.js" type="text/javascript"></script>
+	<script src="{{ STATIC_URL }}autocomplete_geo.js" type="text/javascript"></script>
+{% endblock custom_files %}
+
+{% block custom_js %}
+	<script>
+	$(function() {
+
+	function get_sum(name, current) {
+		if (name == 'engineering') {
+			return current + parseInt($('#id_design').val(), 10) + parseInt($('#id_business').val(), 10) + parseInt($('#id_communication').val(), 10);
+		}
+		else if (name == 'design') {
+			return current + parseInt($('#id_engineering').val(), 10) + parseInt($('#id_business').val(), 10) + parseInt($('#id_communication').val(), 10);
+		}
+		else if (name == 'business') {
+			return current + parseInt($('#id_engineering').val(), 10) + parseInt($('#id_design').val(), 10) + parseInt($('#id_communication').val(), 10);
+		}
+		else if (name == 'communication') {
+			return current + parseInt($('#id_engineering').val(), 10) + parseInt($('#id_design').val(), 10) + parseInt($('#id_business').val(), 10);
+		}
+	}
+
+	function original() {
+		return parseInt($('#id_engineering').val(), 10) + parseInt($('#id_design').val(), 10) + parseInt($('#id_business').val(), 10) + parseInt($('#id_communication').val(), 10);
+	}
+
+	var max_pt = 200;
+	var pt = max_pt;
+	// setup graphic EQ
+	$( "#eq > span" ).each(function() {
+	// read initial values from markup and remove that
+	var value = parseInt( $( this ).text(), 10 );
+	$( this ).empty().slider({
+	value: value,
+	range: "min",
+	step: 1,
+	animate: true,
+	orientation: "vertical",
+	slide: function( event, ui ) {
+	//$("#id_"+this.id).val(ui.value);
+	current = ui.value;
+	pt = 200 - get_sum(this.id, current);
+
+	if (pt >= 0) { $("#id_"+this.id).val(ui.value); $("#id_points").val(pt); }
+
+	return pt >= 0;
+	}
+	});
+	$("#id_"+this.id).val( $( "#"+this.id ).slider( "value" ) );
+	var paska = original();
+	$("#id_points").val(200-paska);
+	});
+	});
+	</script>
+{% endblock custom_js %}
+
+{% block custom_css %}
+	<style>
+		#eq span {
+		height:160px; float:left; margin:15px
+		}
+
+		.content {
+			margin-left: 20px;
+		}
+	</style>
+{% endblock custom_css %}
+
+{% block content %}
+	<div class="content">
+
+	<h2>Update your profile, sir.</h2>
+
+
+	<form action="" method="post">
+		{% csrf_token %}
+		
+		Username <br> <input id="id_username" maxlength="30" name="username" type="text" value="{{ form.username.value }}" /> <br><br>
+		
+		Firstname <br> <input id="id_firstname" maxlength="255" name="firstname" type="text" value="{{ form.firstname.value }}" /> <br><br>
+		
+		Lastname <br> <input id="id_lastname" maxlength="255" name="lastname" type="text" value="{{ form.lastname.value }}" /> <br><br>
+		
+		Email <br> <input id="id_email" name="email" type="text" value="{{ form.email.value }}" /> <br><br>
+		
+		Description <br> <textarea cols="40" id="id_description" name="description" rows="10">{{ form.description.value }}</textarea> <br><br>
+		
+		Skills <br> <textarea cols="40" id="id_skills" name="skills" rows="10">{{ form.skills.value }}</textarea> <br><br>
+		
+		Country <br> <input id="id_country" maxlength="255" name="country" type="text" value="{{ form.country.value }}" /> <br><br>
+		
+		City <br> <input id="id_city" maxlength="255" name="city" type="text" value="{{ form.city.value }}" /> <br><br>
+
+		<div id="eq">
+		<span id="business">{{ preferences.business }}</span>
+		<span id="communication">{{ preferences.communication }}</span>
+		<span id="design">{{ preferences.design }}</span>
+		<span id="engineering">{{ preferences.engineering }}</span>
+		</div>
+
+		<p>
+		<label for="id_business" style="display:inline;">Business:</label><input type="text" id="id_business" name="business" style="width:40px;border: 0; color: #f6931f; font-weight: bold;" />
+		</p>
+
+		<p>
+		<label for="communication" style="display:inline;">Communication:</label><input type="text" id="id_communication" name="communication" style="width:40px;border: 0; color: #f6931f; font-weight: bold; display:inline;" />
+		</p>
+
+		<p>
+		<label for="design" style="display:inline;">Design:</label><input type="text" id="id_design" name="design" style="width:40px;border: 0; color: #f6931f; font-weight: bold; display:inline;" />
+		</p>
+
+		<p>
+		<label for="engineering" style="display:inline;">Engineering:</label><input type="text" id="id_engineering" name="engineering" style="width:40px;border: 0; color: #f6931f; font-weight: bold;display:inline;" />
+		</p>
+
+		<p>
+		<label for="points">Points left:</label><input type="text" id="id_points" style="width:40px;border: 0; color: #f6931f; font-weight: bold;display:inline;" />
+		</p>
+		
+		<button type="submit" class="btn btn-primary btn-medium">
+		Save your profile
+		</button>
+	</form>
+
+	</div>
+
+{% endblock content %}

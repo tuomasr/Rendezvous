@@ -1,0 +1,9 @@
+{% for a in scheme.applications.all %}
+	<a href="/users/{{ a.sender }}/">{{ a.sender }}:</a><br>
+	Applying for {{ a.position }} <br>
+	<u>{{ a.headline }}</u><br>
+	Contents: {{ a.contents }} <br>
+	<a href="/">Send message to {{ a.sender }}</a><br>
+	<a href="user={{ a.sender }}_position={{ a.position }}_status=member">Accept {{ a.sender }} as a member</a><br>
+	<a href="user={{ a.sender }}_position={{ a.position }}_status=admin">Accept {{ a.sender }} as an admin</a><br>
+{% endfor %}

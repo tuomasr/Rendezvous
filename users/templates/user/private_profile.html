@@ -1,0 +1,136 @@
+{% extends "rendezvous/base.html" %}
+
+{% block project_name %}
+	<a class="brand" href="/">Back to home</a>
+{% endblock %}
+
+{% block custom_files %}
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+<script src="{{ STATIC_URL }}piechart.js"></script>
+{% endblock custom_files %}
+
+{% block navigation_bar %}
+    <p class="navbar-text pull-left">
+    Your profile
+    </p>
+{% endblock %}
+
+{% block custom_js %}
+<script>
+
+// kick things off
+window.onload = createPieChart;
+
+function createPieChart() {
+
+//
+// create a PieChart.
+//
+var pieChart = new PieChart( "piechart",
+{
+includeLabels: true,
+data: [{{ pref_rat.0 }}, {{ pref_rat.1 }}, {{ pref_rat.2 }}, {{ pref_rat.3 }}],
+labels: ['Business', 'Communication', 'Design', 'Engineering'],
+colors: [
+             ["#FFDAB9", "#FFDAB9"],
+             ["#E6E6FA", "#E6E6FA"],
+             ["#E0FFFF", "#E0FFFF"],
+             ["#FF0000", "#FF0000"]
+]
+}
+);
+
+//
+// nothing appears until you call draw().
+//
+pieChart.draw();
+
+/*
+* If you want to draw the labels separately, you can set
+* includeLabels to false, and call drawLabel() for each
+* pie chart segment.
+*
+for (var i = 0; i < pieChart.labels.length; i++) {
+pieChart.drawLabel(i);
+}
+*/
+
+/*
+* If you want to select a segment to highight it, you can
+* call select() for a given segment. Here's a little snippet
+* that animates selecting each segment.
+*
+var segment = 0;
+function nextSegment() {
+pieChart.select(segment);
+segment++;
+if (segment < pieChart.data.length) {
+setTimeout(nextSegment, 1000);
+}
+}
+setTimeout(nextSegment, 1000);
+*/
+
+}
+</script>
+{% endblock custom_js %}
+
+{% block custom_css %}
+	<style>
+		.content {
+			margin-left: 20px;
+		}
+	</style>
+{% endblock custom_css %}
+
+{% block content %}
+	<div class="content">
+		Username: {{ user.username }} <br>
+		First name: {{ user.firstname }} <br>
+		Last name: {{ user.lastname }} <br>
+		Full name: {{ user.fullname }} <br>
+		Description: {{ user.description }} <br>
+		Skills:
+		<ul>
+		{% for s in user.skills.all %}
+			<li>{{ s }}<br>
+		{% endfor %}
+		</ul>
+		Public profile URL: {{ user.linkedin_public_profile_url }} <br>
+		Country: {{ user.country }} <br>
+		Region: {{ user.region }} <br>
+		City: {{ user.city }} <br>
+		LinkedIn ID: {{ user.linkedin_id }} <br>
+		LinkedIn connections:
+		<ul>
+		{% for u in user.linkedin_connections.all %}
+			<li>{{ u.fullname }}<script src="//platform.linkedin.com/in.js" type="text/javascript"></script>
+			<script type="IN/MemberProfile" data-id="{{ u.linkedin_public_profile_url }}" data-format="hover"></script><br>
+		{% endfor %}
+		</ul>
+
+		{% if user.linkedin_public_profile_url %}
+		{{ user.fullname }}
+		<script src="//platform.linkedin.com/in.js" type="text/javascript"></script>
+		<script type="IN/MemberProfile" data-id="{{ user.linkedin_public_profile_url }}" data-format="hover"></script>
+		{% endif %}
+
+		<br>
+		<br>
+		Your preferences
+		<br>
+		<canvas id="piechart" width="300" height="300">
+</canvas>
+
+		
+
+		<br>
+		<h2 style="clear:both;"><a href="/user/update_profile/">Update your profile</a></h2>
+	</div>
+
+		
+
+
+{% endblock content %}

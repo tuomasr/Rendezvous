@@ -1,0 +1,135 @@
+{% extends "rendezvous/base.html" %}
+
+{% block project_name %}
+<a class="brand" href="/">Back to home</a>
+{% endblock %}
+
+{% block navigation_bar %}
+    <p class="navbar-text pull-left">
+    Applications and invitations
+    </p>
+{% endblock %}
+
+{% block custom_files %}
+	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
+	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+	<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+{% endblock custom_files %}
+
+{% block custom_css %}
+<style>
+	.user_item {
+	display:inline;
+}
+</style>
+{% endblock custom_css %}
+
+{% block custom_js %}
+<script type="text/javascript">
+$(document).ready(function() {
+$('.discussion').bind('click', function () {
+$.get("/inbox/applications/"+this.id+"/", function(data) {
+$('#result').html(data.html).hide().slideDown('slow');
+});
+});
+});
+</script>
+
+<script>
+	$(function() {
+	$( ".user_item" ).tooltip({
+	items: "a",
+	content: function() {
+		var link = $(this).attr('title');
+		return link;
+	},
+	show: null,
+	position: {
+	my: "left top",
+	at: "left bottom"
+	},
+	open: function( event, ui ) {
+	ui.tooltip.animate({ top: ui.tooltip.position().top }, "fast" );
+	},
+	close: function( event, ui ) {
+    ui.tooltip.hover(
+        function () {
+            $(this).stop(true).fadeTo(800, 1); 
+            //.fadeIn("slow"); // doesn't work because of stop()
+        },
+        function () {
+            $(this).fadeOut("800", function(){ $(this).remove(); })
+        }
+    );
+  	}
+	});
+	});
+</script>
+
+{% endblock custom_js %}
+
+
+
+{% block content %}
+
+    <div class="row-fluid show-grid">
+        <div class="span4">
+            
+			{% if applications_to_schemes %}
+				<h2>Applications to your Schemes:</h2>
+
+				{% for a in applications_to_schemes  %}
+				ID: {{ a.id }}
+				<a href="/schemes/{{ a.scheme.id }}/">{{ a.scheme }}:</a><div class="user_item"><a class="open-user" title="{{ a.sender.get_profile_urls }}">{{ a.sender.username }}</a> applying for {{ a.position }}.</div> <a id="{{ a.id }}" class="discussion">Show Discussion</a>
+				<br>
+				{% endfor %}
+			{% endif %}
+
+			{% if applications_by_user %}
+				<h2>Applications sent by you:</h2>
+
+				{% for a in applications_by_user  %}
+					ID: {{ a.id }}
+					<a href="/schemes/{{ a.scheme.id }}/">{{ a.scheme }}:</a> You are applying for {{ a.position }} <a id="{{ a.id }}" class="discussion">Show Discussion</a>
+					<br>
+				{% endfor %}
+			{% endif %}
+
+			{% if invitations_to_schemes %}
+				<h2>You have been invited to the following Schemes:</h2>
+
+				{% for i in invitations_to_schemes  %}
+				ID: {{ i.id }}
+				<a href="/schemes/{{ i.scheme.id }}/">{{ i.scheme }}:</a><div class="user_item"><a class="open-user" title="{{ i.sender.get_profile_urls }}">{{ i.sender.username }}</a> invited you to {{ i.scheme }} for position {{ i.position }}.</div> <a href="{{ i.scheme.get_absolute_url }}applications/user={{ i.recipient}}_position={{ i.position}}_status=member">Accept invitation</a>
+				<br>
+				{% endfor %}
+			{% endif %}
+
+			{% if invitations_by_user %}
+				<h2>Invitations sent by you:</h2>
+			{% endif %}
+
+            <div class="section">
+            </div>
+
+        </div>
+
+        {% if invitations_to_schemes or invitations_by_user or applications_to_schemes or applications_by_user %}
+        	<div class="span8">
+        		<h2>Some Ajax data to appear!</h2>
+            	<p id="result"></p>
+        	</div>
+       	{% else %}
+       			<h2>No invitations or applications. Go back to <a href="/">main menu</a>.</h2>
+        {% endif %}
+
+
+    </div>
+
+
+
+
+
+
+{% endblock content %}
+

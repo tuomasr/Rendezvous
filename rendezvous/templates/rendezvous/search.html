@@ -1,0 +1,8 @@
+{% if results %}
+	{% for r in results %}
+		{{ r.name }}
+	{% endfor %}
+
+{% else %}
+No search results ;/
+{% endif %}
